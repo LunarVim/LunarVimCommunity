@@ -35,32 +35,19 @@ vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldlevel = 5
 vim.opt.guifont = "FiraCode Nerd Font:h15"
+-- vim.opt.shiftwidth = 4
+-- vim.opt.tabstop = 8
 
--- Language Specific
-lvim.lsp.override = { "rust" }
-lvim.lang.go.formatter.exe = "goimports"
-lvim.lang.python.formatter.exe = "yapf"
-local function clangd_common_on_attach(client, bufnr)
-  require("lsp").common_on_attach(client, bufnr) -- this line is optional
-
-  local opts = { noremap = true, silent = true }
-  vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>lh", "<Cmd>ClangdSwitchSourceHeader<CR>", opts)
-end
-lvim.lang.cpp.lsp.setup.on_attach = clangd_common_on_attach
 -- lvim.lsp.document_highlight = false
 -- lvim.lsp.diagnostics.virtual_text = false
 
--- Completion
-lvim.builtin.compe.source.tabnine = { kind = " ", priority = 200, max_reslts = 6 }
-
--- Treesitter
+-- builtin
 lvim.builtin.treesitter.ensure_installed = "maintained"
 lvim.builtin.treesitter.matchup.enable = true
 lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.context_commentstring.enable = true
--- lvim.treesitter.textsubjects.enable = true
--- lvim.treesitter.playground.enable = true
 lvim.builtin.treesitter.indent = { enable = false }
+lvim.builtin.compe.source.tabnine = { kind = " ", priority = 200, max_reslts = 6 }
 
 -- Plugins
 lvim.builtin.dashboard.active = true
@@ -74,6 +61,35 @@ lvim.builtin.terminal.execs = {
   { "python manage.py test;read", "jt", "Django tests" },
   { "python manage.py makemigrations;read", "jm", "Django makemigrations" },
   { "python manage.py migrate;read", "ji", "Django migrate" },
+}
+
+-- Language Specific
+lvim.lsp.override = { "rust" }
+lvim.lang.go.formatter.exe = "goimports"
+lvim.lang.python.formatter.exe = "yapf"
+
+-- Autocommands
+lvim.autocommands.custom_groups = {
+  -- c, cpp
+  { "Filetype", "c,cpp", "nnoremap <leader>m <cmd>lua require('core.terminal')._exec_toggle('make;read')<CR>"},
+  { "Filetype", "c,cpp", "nnoremap <leader>r <cmd>lua require('core.terminal')._exec_toggle('make run;read')<CR>"},
+  { "Filetype", "c,cpp", "nnoremap <leader>t <cmd>lua require('toggleterm.terminal').Terminal:new {cmd='make test;read', hidden =false}:toggle()<CR>"},
+  { "Filetype", "cpp", "nnoremap <leader>H <Cmd>ClangdSwitchSourceHeader<CR>" },
+
+  -- rust
+  { "Filetype", "rust", "nnoremap <leader>m <cmd>lua require('core.terminal')._exec_toggle('cargo build;read')<CR>"},
+  { "Filetype", "rust", "nnoremap <leader>r <cmd>lua require('core.terminal')._exec_toggle('cargo run;read')<CR>"},
+  { "Filetype", "rust", "nnoremap <leader>t <cmd>lua require('toggleterm.terminal').Terminal:new {cmd='cargo test -- --ignored;read', hidden =false}:toggle()<CR>"},
+  { "Filetype", "rust", "nnoremap <leader>H <cmd>lua require('core.terminal')._exec_toggle('cargo clippy;read')<CR>"},
+  { "Filetype", "rust", "nnoremap <leader>lm <Cmd>RustExpandMacro<CR>" },
+  { "Filetype", "rust", "nnoremap <leader>lH <Cmd>RustToggleInlayHints<CR>" },
+  { "Filetype", "rust", "nnoremap <leader>le <Cmd>RustRunnables<CR>" },
+  { "Filetype", "rust", "nnoremap <leader>lh <Cmd>RustHoverActions<CR>" },
+
+  -- python
+  { "Filetype", "python", "nnoremap <leader>r <cmd>lua require('core.terminal')._exec_toggle('python " .. vim.fn.expand("%") .. ";read')<CR>"},
+  { "Filetype", "python", "nnoremap <leader>t <cmd>lua require('toggleterm.terminal').Terminal:new {cmd='python -m test -j0;read', hidden =false}:toggle()<CR>"},
+  { "Filetype", "python", "nnoremap <leader>m <cmd>lua require('core.terminal')._exec_toggle('echo \"compile :pepelaugh:\";read')<CR>"},
 }
 
 -- Debugging
@@ -179,25 +195,6 @@ lvim.builtin.dap.on_config_done = function()
   }
 end
 
--- Autocommands
-local _autocmds = {
-  lang_specific = {
-    { "Filetype", "c,cpp", "nnoremap <leader>m :!make<CR>" },
-    { "Filetype", "c,cpp", "nnoremap <leader>r :!make run<CR>" },
-    { "Filetype", "c,cpp", "nnoremap <leader>t :!make test<CR>" },
-    { "Filetype", "rust", "nnoremap <leader>m :cargo build<CR>" },
-    { "Filetype", "rust", "nnoremap <leader>r :cargo run<CR>" },
-    { "Filetype", "rust", "nnoremap <leader>t <Cmd>!cargo test -- --ignored<CR>" },
-    { "Filetype", "rust", "nnoremap <leader>H <Cmd>!cargo clippy --all-targets<CR>" },
-    { "Filetype", "rust", "nnoremap <leader>lm <Cmd>RustExpandMacro<CR>" },
-    { "Filetype", "rust", "nnoremap <leader>lH <Cmd>RustToggleInlayHints<CR>" },
-    { "Filetype", "rust", "nnoremap <leader>le <Cmd>RustRunnables<CR>" },
-    { "Filetype", "rust", "nnoremap <leader>lh <Cmd>RustHoverActions<CR>" },
-    { "Filetype", "python", "nnoremap <leader>r :python %<CR>" },
-  },
-}
-require("core.autocmds").define_augroups(_autocmds)
-
 -- Additional Plugins
 lvim.plugins = {
   {
@@ -281,21 +278,14 @@ lvim.plugins = {
       require("trouble").setup()
     end,
     cmd = "Trouble",
-    -- event = "BufRead",
   },
-  -- {
-  --   "ggandor/lightspeed.nvim",
-  --   event = "BufRead",
-  -- },
   {
     "simrat39/symbols-outline.nvim",
     cmd = "SymbolsOutline",
-    -- event = "BufRead",
   },
   {
     "sindrets/diffview.nvim",
     cmd = "DiffviewOpen",
-    -- event = "BufRead",
   },
   {
     "nvim-telescope/telescope-project.nvim",
@@ -342,7 +332,6 @@ lvim.plugins = {
       }
     end,
     cmd = "ZenMode",
-    -- event = "BufRead",
   },
   { "kevinhwang91/nvim-bqf", event = "BufRead" },
   {
@@ -493,12 +482,14 @@ lvim.plugins = {
           twilight = { enabled = true },
         },
         on_open = function()
+          vim.lsp.diagnostic.disable()
           vim.cmd [[
           set foldlevel=10
           IndentBlanklineDisable
           ]]
         end,
         on_close = function()
+          vim.lsp.diagnostic.enable()
           vim.cmd [[
           set foldlevel=5
           IndentBlanklineEnable
@@ -528,3 +519,7 @@ lvim.builtin.which_key.mappings["gd"] = { "<cmd>DiffviewOpen HEAD~1<cr>", "Diff"
 lvim.builtin.which_key.mappings["dU"] = { "<cmd>lua require('dapui').toggle()<cr>", "Toggle UI" }
 lvim.builtin.which_key.mappings["de"] = { "<cmd>lua require('dapui').eval()<cr>", "Eval" }
 lvim.builtin.which_key.mappings["lf"] = { "<cmd>lua vim.lsp.buf.formatting()<cr>", "Format" }
+lvim.builtin.which_key.mappings["r"] = "Run"
+lvim.builtin.which_key.mappings["m"] = "Make"
+lvim.builtin.which_key.mappings["t"] = "Test"
+lvim.builtin.which_key.mappings["H"] = "Help"
