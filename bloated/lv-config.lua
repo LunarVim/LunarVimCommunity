@@ -9,7 +9,7 @@ local disabled_built_ins = {
   "zip",
   "zipPlugin",
   "tar",
-  "tarPlugin",
+  "tarPlugin", -- 'man',
   "getscript",
   "getscriptPlugin",
   "vimball",
@@ -18,6 +18,7 @@ local disabled_built_ins = {
   "logipat",
   "rrhelper",
   "spellfile_plugin",
+  -- 'matchit', 'matchparen', 'shada_plugin',
 }
 for _, _plugin in pairs(disabled_built_ins) do
   vim.g["loaded_" .. _plugin] = 1
@@ -58,34 +59,29 @@ lvim.builtin.terminal.execs = {
   { "python manage.py makemigrations;read", "jm", "Django makemigrations" },
   { "python manage.py migrate;read", "ji", "Django migrate" },
 }
+-- lvim.builtin.nvimtree.hide_dotfiles = 0
+-- lvim.treesitter.textsubjects.enable = true
+-- lvim.treesitter.playground.enable = true
 
 -- Language Specific
 -- =========================================
-lvim.lsp.override = { "rust" }
+lvim.lsp.override = { "rust", "java" }
 lvim.lang.go.formatter.exe = "goimports"
 lvim.lang.python.formatter.exe = "yapf"
-
-local load = function(path)
-  local status_ok, error = pcall(vim.cmd, path)
-
-  if not status_ok then
-    print "something is wrong with your lv-config"
-    print(error)
-  end
-end
+require("user.json_schemas").setup()
 
 -- Additional Plugins
 -- =========================================
-load "luafile ~/.config/lvim/plugins.lua"
+require("user.plugins").config()
 
 -- Autocommands
 -- =========================================
-load "luafile ~/.config/lvim/autocommands.lua"
+require("user.autocommands").config()
 
 -- Debugging
 -- =========================================
-load "luafile ~/.config/lvim/debugging.lua"
+lvim.builtin.dap.on_config_done = require("user.dap").config()
 
 -- Additional Leader bindings for WhichKey
 -- =========================================
-load "luafile ~/.config/lvim/keybindings.lua"
+require("user.keybindings").config()
