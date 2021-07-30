@@ -27,8 +27,7 @@
 
 ```bash
 git clone https://github.com/LunarVim/LunarVimCommunity.git
-cp LunarVimCommunity/bloated/lv-config.lua ~/.config/lvim/lv-config.lua
-lvim # run :PackerSync
+mv LunarVimCommunity/bloated ~/.config/lvim
 ```
 
 ## Known Issues
