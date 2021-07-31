@@ -1,10 +1,57 @@
 # Bloated LunarVim
 
-## What is included
+Do not use as is 😅, use it as a source of inspiration.
+
+## Known Issues
+
+- Do not use as is, too much bloated! Also do not use on a potato PC!!
+- sometimes `compe-tabnine` doesn't play nice, you can disable it :)
+- if you wanna see the issues, remove `lvim.lsp.diagnostics.virtual_text = false`
+- Using tailwinds CSS for markdown, disable it if you want
+
+<!--
+- orgmode is using `~/shared/orgs` folder
+  -->
+
+## How to use
+
+```shell
+# install LunarVim
+mv ~/.config/lvim ~/.config/lvim_backup
+git clone https://github.com/LunarVim/LunarVimCommunity.git
+mv LunarVimCommunity/bloated ~/.config/lvim
+cargo install selene  # if you want to use selene instead of luacheck
+brew install hadolint  # if you want to lint dockerfiles
+pip install vim-vint  # for vim linting
+# install llvm and clang_format for clang stuff
+pip install yapf flake8 black  # for python stuff
+# if you want to use the markdown thingy
+brew install vale
+cp -r ~/.config/lvim/.vale ~/.config/vale
+# fix the address inside .vale.ini
+cp ~/.config/lvim/.vale.ini ~/.vale.ini
+lvim # run :PackerSync
+```
+```vim
+:LspInstall lua
+:LspInstall yaml
+:LspInstall dockerfile
+:LspInstall python
+:LspInstall vim
+:LspInstall json
+:LspInstall go
+:LspInstall bash
+:LspInstall cpp
+:LspInstall csharp
+:LspInstall rust
+:LspInstall cmake
+:LspInstall tailwindcss
+```
+
+## Included Plugins
 
 - [Tokyonight Theme](https://github.com/folke/tokyonight.nvim/)
 - [Doom One Theme](https://github.com/NTBBloodbath/doom-one.nvim)
-- [zephyr-nvim](https://github.com/glepnir/zephyr-nvim)
 - [LSP Signature](https://github.com/ray-x/lsp_signature.nvim/)
 - [nvim-lastplace](https://github.com/ethanholz/nvim-lastplace)
 - [Todo Comments](https://github.com/folke/todo-comments.nvim)
@@ -23,19 +70,9 @@
 - [rust-tools](https://github.com/simrat39/rust-tools.nvim)
 - [nvim-spectre](https://github.com/windwp/nvim-spectre)
 - [Hop](https://github.com/phaazon/hop.nvim)
+- [zephyr-nvim](https://github.com/abzcoding/zephyr-nvim)
+
 <!--
 - [Orgmode.nvim](https://github.com/kristijanhusak/orgmode.nvim))
--->
+  -->
 
-## How to use
-
-```bash
-git clone https://github.com/LunarVim/LunarVimCommunity.git
-mv LunarVimCommunity/bloated ~/.config/lvim
-```
-
-## Known Issues
-
-- it is extremely bloated! Do not use on a potato PC!!
-- sometimes `compe-tabnine` doesn't play nice, you can disable it :)
-- orgmode is set to use `~/shared/orgs` folder

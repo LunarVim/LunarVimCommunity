@@ -34,7 +34,7 @@ M.config = function()
       end,
     },
     {
-      "glepnir/zephyr-nvim",
+      "abzcoding/zephyr-nvim",
       config = function()
         vim.cmd [[
       colorscheme zephyr
