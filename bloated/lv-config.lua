@@ -48,6 +48,7 @@ lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.context_commentstring.enable = true
 lvim.builtin.treesitter.indent = { enable = false }
 lvim.builtin.compe.source.tabnine = { kind = " ", priority = 200, max_reslts = 6 }
+-- lvim.builtin.compe.source.orgmode = true
 lvim.builtin.dashboard.active = true
 lvim.builtin.dap.active = true
 lvim.builtin.galaxyline.active = true
@@ -66,8 +67,6 @@ lvim.builtin.terminal.execs = {
 -- Language Specific
 -- =========================================
 lvim.lsp.override = { "rust", "java" }
-lvim.lang.go.formatter.exe = "goimports"
-lvim.lang.python.formatter.exe = "yapf"
 require("user.json_schemas").setup()
 
 -- Additional Plugins
